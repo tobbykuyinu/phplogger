@@ -1,0 +1,2 @@
+# phplogger
+Logger for PHP
