@@ -26,16 +26,18 @@ class Logger extends AbstractLogger {
     /**
      * Logger constructor.
      * @param array $config - configuration array with the following possible keys:
-     *      - file (recommended) - the path to the log file - defaults to logs.log
+     *      - file (required) - the path to the log file
      *      - level (optional) - the log level. Defaults to 'info'
      *      - console (optional) - option for logging to console. Defaults to true
      * @throws Error
      */
     public function __construct(array $config)
     {
-        $file = isset($config['file']) ? $config['file'] : 'logs.log';
-        $file = dirname(__DIR__) . '/' . $file;
+        if (!isset($config['file']) || empty($config['file'])) {
+            throw new Error('Please set a log path');
+        }
 
+        $file = $config['file'];
         $fh = fopen($file, 'a');
 
         if (!$fh) {

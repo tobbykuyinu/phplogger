@@ -6,7 +6,6 @@ class LoggerTest extends PHPUnit_Framework_TestCase
 {
     protected $outPath = 'tests/logs/out.log';
     protected $outLogDir = 'tests/logs';
-    protected $defaultFile = 'logs.log';
     private $config;
     const LOG_CLASS = 'Tobby\PhpLogger\Logger';
 
@@ -15,10 +14,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->config = [];
+        $this->config = ['file' => $this->outPath];
         @mkdir($this->outLogDir);
         @unlink($this->outPath);
-        @unlink($this->defaultFile);
     }
 
     /**
@@ -27,7 +25,6 @@ class LoggerTest extends PHPUnit_Framework_TestCase
     protected function tearDown()
     {
         @unlink($this->outPath);
-        @unlink($this->defaultFile);
         @rmdir($this->outLogDir);
     }
 
@@ -37,29 +34,21 @@ class LoggerTest extends PHPUnit_Framework_TestCase
     public function testCreatesSpecifiedFileIfNotExists()
     {
         $this->assertFalse(file_exists($this->outPath));
-        $this->assertFalse(file_exists($this->defaultFile));
 
         $this->config['file'] = $this->outPath;
         $logger = new Logger($this->config);
         $logger->info('Info log message');
 
         $this->assertTrue(file_exists($this->outPath));
-        $this->assertFalse(file_exists($this->defaultFile));
     }
 
     /**
-     * @test creates a default file if none is specified
+     * @test Requires file config parameter
      */
-    public function testCreatesDefaultFileIfNoneSpecified()
+    public function testRequiresFileConfigParam()
     {
-        $this->assertFalse(file_exists($this->outPath));
-        $this->assertFalse(file_exists($this->defaultFile));
-
-        $logger = new Logger($this->config);
-        $logger->info('Info log message');
-
-        $this->assertFalse(file_exists($this->outPath));
-        $this->assertTrue(file_exists($this->defaultFile));
+        $this->setExpectedException('Error');
+        new Logger([]);
     }
 
     /**
@@ -123,7 +112,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
 
         $logger->expects($this->never())->method('makeMessage');
         $logger->expects($this->never())->method('write');
-        $logger->debug('message');
+        $logger->debug('message is not logged');
     }
 
     /**
@@ -139,7 +128,7 @@ class LoggerTest extends PHPUnit_Framework_TestCase
 
         $logger->expects($this->never())->method('makeMessage');
         $logger->expects($this->never())->method('write');
-        $logger->debug('message');
+        $logger->debug('message is not logged');
     }
 }
 
