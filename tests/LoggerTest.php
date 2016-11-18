@@ -10,6 +10,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
     private $config;
     const LOG_CLASS = 'Tobby\PhpLogger\Logger';
 
+    /**
+     * Provision tests
+     */
     protected function setUp()
     {
         $this->config = [];
@@ -18,6 +21,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         @unlink($this->defaultFile);
     }
 
+    /**
+     * Unset test infrastructure
+     */
     protected function tearDown()
     {
         @unlink($this->outPath);
@@ -25,6 +31,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         @rmdir($this->outLogDir);
     }
 
+    /**
+     * @test Create specified file if not exists
+     */
     public function testCreatesSpecifiedFileIfNotExists()
     {
         $this->assertFalse(file_exists($this->outPath));
@@ -38,6 +47,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         $this->assertFalse(file_exists($this->defaultFile));
     }
 
+    /**
+     * @test creates a default file if none is specified
+     */
     public function testCreatesDefaultFileIfNoneSpecified()
     {
         $this->assertFalse(file_exists($this->outPath));
@@ -50,6 +62,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(file_exists($this->defaultFile));
     }
 
+    /**
+     * @test logs to console by default
+     */
     public function testLogsToConsoleByDefault()
     {
         $logger = $this->getMockBuilder(self::LOG_CLASS)
@@ -62,6 +77,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         $logger->info('message should log to console by default');
     }
 
+    /**
+     * @test log to console if specified
+     */
     public function testLogsToConsoleIfSpecified()
     {
         $this->config['console'] = true;
@@ -75,6 +93,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         $logger->info('Message should log to console when console = true');
     }
 
+    /**
+     * @test does not log to console when specified
+     */
     public function testDoesNotLogToConsoleWhenSpecified()
     {
         $this->config['console'] = false;
@@ -88,6 +109,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         $logger->info('Message should not log to console');
     }
 
+    /**
+     * @test does not log above specified log level
+     */
     public function testDoesNotLogAboveSpecifiedLogLevel()
     {
         $this->config['level'] = LogLevel::INFO;
@@ -102,6 +126,9 @@ class LoggerTest extends PHPUnit_Framework_TestCase
         $logger->debug('message');
     }
 
+    /**
+     * @test defaults to info log level
+     */
     public function testDefaultsToInfoLogLevel()
     {
         $logger = $this->getMockBuilder(self::LOG_CLASS)
